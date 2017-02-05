@@ -33,7 +33,7 @@ body {
 #cell-7,
 #cell-8,
 #cell-9 {
-	border-top: 2px solid #999;
+	border-top: 3px solid yellow;
 }
 
 
@@ -43,11 +43,11 @@ body {
 #cell-5,
 #cell-7,
 #cell-8 {
-	border-right: 2px solid #999;
+	border-right: 3px solid yellow;
 }
 
 .cell-inner {
-    border: 5px outset #649cf2;
+    /*border: 5px outset #649cf2;*/
     height: 100%;
     width: 100%;
     text-align: center;

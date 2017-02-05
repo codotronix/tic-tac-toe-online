@@ -10,6 +10,8 @@ var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
 
+var socketManager = require('./node-code/socket-manager');
+
 //
 // ## SimpleServer `SimpleServer(obj)`
 //
@@ -24,41 +26,33 @@ router.use(express.static(path.resolve(__dirname, 'src')));
 var messages = [];
 var sockets = [];
 
-// io.on('connection', function (socket) {
-//     messages.forEach(function (data) {
-//       socket.emit('message', data);
-//     });
+console.log(socketManager);
 
-//     sockets.push(socket);
+io.on('connection', function (socket) {
+    // messages.forEach(function (data) {
+    //   socket.emit('message', data);
+    // });
 
-//     socket.on('disconnect', function () {
-//       sockets.splice(sockets.indexOf(socket), 1);
-//       updateRoster();
-//     });
+    console.log("socket=");console.log(socket);
 
-//     socket.on('message', function (msg) {
-//       var text = String(msg || '');
+    sockets.push(socket);
 
-//       if (!text)
-//         return;
+    socket.on('disconnect', function () {
+    	console.log('Server: disconnected');
+      // sockets.splice(sockets.indexOf(socket), 1);
+      // updateRoster();
+    });
 
-//       socket.get('name', function (err, name) {
-//         var data = {
-//           name: name,
-//           text: text
-//         };
+    socket.on('message', function (msg) {
+      console.log('Server: message received'); console.log(msg);
+    });
 
-//         broadcast('message', data);
-//         messages.push(data);
-//       });
-//     });
-
-//     socket.on('identify', function (name) {
-//       socket.set('name', String(name || 'Anonymous'), function (err) {
-//         updateRoster();
-//       });
-//     });
-//   });
+    // socket.on('identify', function (name) {
+    //   socket.set('name', String(name || 'Anonymous'), function (err) {
+    //     updateRoster();
+    //   });
+    // });
+});
 
 // function updateRoster() {
 //   async.map(
