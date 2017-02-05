@@ -1,3 +1,27 @@
+body {
+	background: #000d56;
+}
+
+#header-bar  {
+    position: fixed;
+    margin: 0;
+    padding: 7px;
+    background: #44347a;
+    left: 0;
+    right: 0;
+    top: 0;
+    color: #eee;
+    text-align: center;
+}
+
+#mainContainer {
+	margin-top: 60px;
+}
+
+#home-btn-panel {
+	margin-top: 140px;
+}
+
 .cell {
 	max-height: 200px;
 	padding: 5px;
@@ -8,8 +32,7 @@
 #cell-6,
 #cell-7,
 #cell-8,
-#cell-9
-{
+#cell-9 {
 	border-top: 2px solid #999;
 }
 

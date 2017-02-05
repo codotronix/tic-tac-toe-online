@@ -10,6 +10,7 @@
     <!-- Bootstrap -->
     <link href="lib/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="lib/css/animate.css" rel="stylesheet"/>
     <link href="css/style.css" rel="stylesheet"/>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,38 +19,21 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body>
-    <h1>Tic Tac Toe Online</h1>
+  <body ng-app="tttgame">
+    
 
     <div id="mainContainer" class="container-fluid">
-      <div id="gameBoard" class="col-xs-12 col-sm-8 col-md-6">
-        
-        <div id="cell-1" class="cell col-xs-4">
-          <div class="cell-inner">
-            <i class="sign cross fa fa-times"></i>
-          </div>
-        </div>
-        <div id="cell-2" class="cell col-xs-4">
-          <div class="cell-inner">
-            <i class="sign circle fa fa-circle-o"></i>
-          </div>
-        </div>
-        <div id="cell-3" class="cell col-xs-4">
-          <div class="cell-inner">3</div>
-        </div>
-
-        <div id="cell-4" class="cell col-xs-4">4</div>
-        <div id="cell-5" class="cell col-xs-4">5</div>
-        <div id="cell-6" class="cell col-xs-4">6</div>
-
-        <div id="cell-7" class="cell col-xs-4">7</div>
-        <div id="cell-8" class="cell col-xs-4">8</div>
-        <div id="cell-9" class="cell col-xs-4">9</div>
-
-      </div>  
+      <div ng-include="'partials/header.html'"></div>
+      <div ng-view=""></div>  
     </div>
     
     <script src="lib/js/jquery.min.js"></script>
+    <script src="lib/js/angular.min.js"></script>
+    <script src="lib/js/angular-route.min.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/cellsManagerService.js"></script>
+    <script src="js/gameController.js"></script>
   </body>
 </html>

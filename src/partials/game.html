@@ -1,0 +1,8 @@
+<div id="gameBoard" class="col-xs-12 col-sm-8 col-md-6">
+	<div ng-repeat="cell in vm.getCells()" class="cell col-xs-4" id="{{cell.id}}">
+      <div class="cell-inner">
+        <i class="sign cross fa fa-times" ng-show="cell.sign === 'cross'"></i>
+        <i class="sign circle fa fa-circle-o" ng-show="cell.sign === 'circle'"></i>
+      </div>
+    </div>
+</div>

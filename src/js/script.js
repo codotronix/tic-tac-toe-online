@@ -12,6 +12,4 @@ $(function(){
 		$('.cell').height($('.cell').width());
 		$('.sign').css('font-size', $('.cell-inner').height());
 	}
-
-	
 })

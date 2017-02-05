@@ -21,7 +21,9 @@
     "url": "https://github.com/codotronix/tic-tac-toe-online/issues"
   },
   "homepage": "https://github.com/codotronix/tic-tac-toe-online#readme",
-  "devDependencies": {
-    
+  "devDependencies": {},
+  "dependencies": {
+    "express": "^4.14.1",
+    "socket.io": "^1.7.2"
   }
 }
