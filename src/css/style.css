@@ -2,6 +2,10 @@ body {
 	background: #000d56;
 }
 
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
+
 #header-bar  {
     position: fixed;
     margin: 0;
@@ -20,6 +24,17 @@ body {
 
 #home-btn-panel {
 	margin-top: 140px;
+}
+
+#home-or {
+    font-size: 22px;
+    text-align: center;
+    color: #fff;
+    margin: 15px;
+}
+
+#gameBoard {
+    margin-top: 20px;
 }
 
 .cell {
