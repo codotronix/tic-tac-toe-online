@@ -1,0 +1,27 @@
+{
+  "name": "tic-tac-toe-online",
+  "version": "1.0.0",
+  "description": "Online Tic Tac Toe game",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codotronix/tic-tac-toe-online.git"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "game",
+    "multiplayer"
+  ],
+  "author": "Suman Barick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codotronix/tic-tac-toe-online/issues"
+  },
+  "homepage": "https://github.com/codotronix/tic-tac-toe-online#readme",
+  "devDependencies": {
+    
+  }
+}

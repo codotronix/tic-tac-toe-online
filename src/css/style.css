@@ -1,0 +1,39 @@
+.cell {
+	max-height: 200px;
+	padding: 5px;
+}
+
+#cell-4,
+#cell-5,
+#cell-6,
+#cell-7,
+#cell-8,
+#cell-9
+{
+	border-top: 2px solid #999;
+}
+
+
+#cell-1,
+#cell-2,
+#cell-4,
+#cell-5,
+#cell-7,
+#cell-8 {
+	border-right: 2px solid #999;
+}
+
+.cell-inner {
+    border: 5px outset #649cf2;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.cell-inner .cross {
+	color: red;
+}
+
+.cell-inner .circle {
+	color: blue;
+}
