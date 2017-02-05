@@ -1,0 +1,119 @@
+body {
+	background: #000d56;
+}
+
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.margin-top-5 {
+    margin-top: 5px;
+}
+
+.error {
+    color: red;
+    margin: 2px 0 5px 0;
+    display: inline-block;
+    font-size: 15px;
+    display: none;
+}
+
+input.form-control {
+    height: 40px;
+    font-size: 16px;
+}
+
+#modal {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 999999;
+    display: none;
+}
+
+#modal .msg {
+    position: fixed;
+    left: 25px;
+    right: 25px;
+    top: 200px;
+    height: 300px;
+    background: #fff;
+    border: 4px outset #afaff7;
+    border-radius: 4px;
+    padding: 20px;
+    font-size: 20px;
+    text-align: center;
+}
+
+#header-bar  {
+    position: fixed;
+    margin: 0;
+    padding: 7px;
+    background: #44347a;
+    left: 0;
+    right: 0;
+    top: 0;
+    color: #eee;
+    text-align: center;
+}
+
+#mainContainer {
+	margin-top: 60px;
+}
+
+#home-btn-panel {
+	margin-top: 140px;
+}
+
+#home-or {
+    font-size: 22px;
+    text-align: center;
+    color: #fff;
+    margin: 15px;
+}
+
+#gameBoard {
+    margin-top: 20px;
+}
+
+.cell {
+	max-height: 200px;
+	padding: 5px;
+}
+
+#cell-4,
+#cell-5,
+#cell-6,
+#cell-7,
+#cell-8,
+#cell-9 {
+	border-top: 3px solid yellow;
+}
+
+
+#cell-1,
+#cell-2,
+#cell-4,
+#cell-5,
+#cell-7,
+#cell-8 {
+	border-right: 3px solid yellow;
+}
+
+.cell-inner {
+    /*border: 5px outset #649cf2;*/
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.cell-inner .cross {
+	color: red;
+}
+
+.cell-inner .circle {
+	color: blue;
+}

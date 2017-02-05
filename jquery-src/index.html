@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<title>Tic-Tac-Toe Online</title>
+
+	<!-- Bootstrap -->
+	<link href="lib/css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+	<link href="lib/css/animate.css" rel="stylesheet"/>
+	<link href="css/style.css" rel="stylesheet"/>
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+  </head>
+  <body>
+	<div id="mainContainer" class="container-fluid">
+	  
+	  <!-- THE MODAL START -->
+	  <div id="modal">
+	  	<div class="msg">1234</div>
+	  </div>
+	  <!-- THE MODAL END -->
+
+	  <!-- HEADER BAR START -->
+	  <h1 id="header-bar">
+		Tic Tac Toe Online
+	  </h1>
+	  <!-- HEADER BAR END -->
+
+	  <!-- ******************** HOME PAGE START ******************** --> 
+	  <div class="page page-home">
+		<div class="col-xs-12">
+			<div id="home-btn-panel" class="col-xs-12 col-sm-6 col-md-4 col-sm-offset-3 col-md-offset-4">
+				<input id="input_username" type="text" placeholder="Type your name" class="form-control" />
+				<span class="error"> * Name is required to proceed</span>
+				<button id="btn_StartNewGame" type="button" class="btn btn-primary btn-lg btn-block margin-top-5">
+					START NEW GAME
+				</button>
+
+				<div id="home-or">
+					<span>OR</span>
+				</div>
+
+				<input id="input_username1" type="text" placeholder="Type your name" class="form-control" />
+				<span class="error"> * Name is required to proceed</span>
+				<input id="input_GameID" type="text" placeholder="Type Game ID" class="form-control margin-top-5" />
+				<span class="error"> * Game ID is required to proceed</span>
+				<button id="btn_JoinGame" type="button" class="btn btn-primary btn-lg btn-block margin-top-5">
+					JOIN THIS GAME
+				</button>
+			</div>
+		</div>
+	  </div>
+	  <!-- ******************** HOME PAGE END ******************** --> 
+
+
+
+
+	  <!-- ****************** GAME PAGE STARTS ******************* -->
+	  	<div id="gameBoard" class="page page-game col-xs-12 col-sm-8 col-md-6">	
+			<!-- <div class="cell col-xs-4" id="{{cell.id}}">
+		      <div class="cell-inner">
+		        <i class="sign cross fa fa-times" ng-show="cell.sign === 'cross'"></i>
+		        <i class="sign circle fa fa-circle-o" ng-show="cell.sign === 'circle'"></i>
+		      </div>
+		    </div> -->
+		</div>
+	  <!-- ****************** GAME PAGE ENDS ********************* -->
+
+
+
+	</div>
+	
+	<!-- ALL SCRIPT FILES -->
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="lib/js/jquery.min.js"></script>
+	<script src="js/script.js"></script>
+  </body>
+</html>

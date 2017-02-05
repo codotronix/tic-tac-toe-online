@@ -6,7 +6,7 @@
 var http = require('http');
 var path = require('path');
 
-var async = require('async');
+//var async = require('async');
 var socketio = require('socket.io');
 var express = require('express');
 
@@ -22,7 +22,7 @@ var router = express();
 var server = http.createServer(router);
 var io = socketio.listen(server);
 
-router.use(express.static(path.resolve(__dirname, 'src')));
+router.use(express.static(path.resolve(__dirname, 'jquery-src')));
 
 io.on('connection', function (socket) {
     // messages.forEach(function (data) {
@@ -38,17 +38,43 @@ io.on('connection', function (socket) {
     	socketManager.deleteSocket(socket.id);
     });
 
-    socket.on("new-game-request", function (username) {
+    socket.on("NEW_GAME", function (username) {
         console.log("new-game-request received from " + username);
-    	var sessionID = socketManager.startNewGameSession(socket.id, username);
-        socketManager.send(socket.id, "new-game-created", sessionID);
+        
+        //Ask socket manager to create a new game session id
+    	var gameID = socketManager.startNewGameSession(socket.id, username);
+
+        //Send this newly created gameID back to client
+        socketManager.send(socket.id, "GAME_CREATED", gameID);
     });
 
 
-    socket.on("join-game-request", function (joiningInfo) {
-        console.log("join-game-request received from " + joiningInfo.username + " and gameID="+joiningInfo.gameID);
-        socketManager.joinGame(joiningInfo);
-        socketManager.sendToGameIDPlayers(joiningInfo.gameID, "game-join-successful", undefined);
+    socket.on("JOIN_GAME", function (userInfo) {
+        console.log("join-game-request received from " + userInfo.username 
+            + " and gameID="+userInfo.gameID);
+        
+        //Try to add this player to this gameID
+        var success = socketManager.joinGame(userInfo);
+
+        if (success) {
+            //Choose between 0 or 1, who will play 1st
+            var rand = Math.floor(Math.random() * 2);
+            var gameMsg = {};
+            gameMsg.type = 'Init';
+            gameMsg.players = socketManager.getPlayers(userInfo.gameID);
+            gameMsg.whoseTurn = gameMsg.players[rand];
+            gameMsg.cells = getBlankCells();
+
+            //Voila!!! Send BOTH THE PLAYER 1st GAME_MSG
+            socketManager.sendTo_Players_of_GameID(userInfo.gameID, "GAME_MSG", gameMsg);
+        } 
+        else {
+            var err = {};
+            err.type = "JOINING_ERROR";
+            err.msg = "Check if GAME-ID is correct...";
+            socketManager.send(userInfo.gameID, "ERROR", err);
+        }
+        
     });
 
     /*
@@ -91,7 +117,7 @@ function startGame(gameID, players) {
 
     var rand = Math.floor(Math.random() * 2);    
     var goi = makeGameInfoObj(gameID, players, players[rand]);
-    socketManager.sendToGameIDPlayers(gameID, "game-info", goi);
+    socketManager.sendTo_Players_of_GameID(gameID, "game-info", goi);
 }
 
 function makeGameInfoObj (gameID, players, whosTurn) {
@@ -99,6 +125,20 @@ function makeGameInfoObj (gameID, players, whosTurn) {
     gameObject.players = players;
     gameObject.whosTurn = whosTurn;
     return gameObject;
+}
+
+
+function getBlankCells () {
+    var cells = [];
+    var cell;
+    for (var i=1; i<=9; i++) {
+        cell = {};
+        cell.id = 'cell-' + i;
+        cell.sign = 'blank';
+        cells.push(cell);
+    }
+
+    return cells;
 }
 
 
@@ -121,7 +161,7 @@ function makeGameInfoObj (gameID, players, whosTurn) {
 //   });
 // }
 
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
+server.listen(process.env.PORT || 8080, process.env.IP || "127.0.0.1", function(){
   var addr = server.address();
   console.log("Chat server listening at", addr.address + ":" + addr.port);
 });

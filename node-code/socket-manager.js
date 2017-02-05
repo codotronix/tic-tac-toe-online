@@ -4,7 +4,7 @@ module.exports = {
 	"startNewGameSession": startNewGameSession,
 	"joinGame": joinGame,
 	"sendToAll": sendToAll,
-	"sendToGameIDPlayers": sendToGameIDPlayers,
+	"sendTo_Players_of_GameID": sendTo_Players_of_GameID,
 	"send": send,
 	"getPlayers": getPlayers,
 	"markPlayerAsReady": markPlayerAsReady
@@ -22,7 +22,7 @@ function addSocket (socket) {
 
 function deleteSocket (socketID) {
 	console.log('Deleting socket with id = ' + socketID);
-	delete sockets[socket.id];	
+	delete sockets[socketID];	
 }
 
 
@@ -46,16 +46,22 @@ function createUniqID () {
 }
 
 
-function joinGame (joiningInfo) {
+function joinGame (userInfo) {
 	var user = {};
-	user.username = joiningInfo.username;
-	user.socketID = joiningInfo.socketID;
-	if (gameSessions[joiningInfo.gameID] !== undefined) {
-		gameSessions[joiningInfo.gameID].users[1] = user;
+	user.username = userInfo.username;
+	user.socketID = userInfo.socketID;
+	if (gameSessions[userInfo.gameID] !== undefined) {
+		gameSessions[userInfo.gameID].users[1] = user;
+
+		//assign signs
+		gameSessions[userInfo.gameID].users[0].sign = "cross";
+		gameSessions[userInfo.gameID].users[1].sign = "circle";
+
 		return true;
 	}
 	else {
-		console.log('joining game failed... gameID='+joiningInfo.gameID+' does not exist');
+		console.log('joining game failed... gameID='+userInfo.gameID
+			+' does not exist');
 		return false;
 	}	
 }
@@ -76,12 +82,13 @@ function send (socketID, event, data) {
 
 function sendToAll (userArray, event, data) {
 	userArray.forEach(function(user){
+		console.log('Sending '+event+' event to ' + user.socketID);
 		send(user.socketID, event, data);
 	});
 }
 
 
-function sendToGameIDPlayers (gameID, event, data) {
+function sendTo_Players_of_GameID (gameID, event, data) {
 	sendToAll(gameSessions[gameID].users, event, data);
 }
 
