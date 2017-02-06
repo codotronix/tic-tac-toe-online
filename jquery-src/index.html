@@ -22,9 +22,23 @@
   <body>
 	<div id="mainContainer" class="container-fluid">
 	  
+	<!-- Token Message Start -->
+	  	<div id="tokenMsg">
+			<span class="msg">Greetings</span>
+		</div>
+	<!-- Token Message End -->
+
 	  <!-- THE MODAL START -->
 	  <div id="modal">
-	  	<div class="msg">1234</div>
+	  	<div class="msgContainer">
+	  	<i class="closeIcon fa fa-times"></i>
+  		<span class="msg"></span>  		
+	  	</div>
+
+	  	<div class="wait">
+	  		<div class="fa fa-hand-paper-o"></div>
+	  		<div>Wait...</div>
+	  	</div>
 	  </div>
 	  <!-- THE MODAL END -->
 
@@ -64,13 +78,20 @@
 
 
 	  <!-- ****************** GAME PAGE STARTS ******************* -->
-	  	<div id="gameBoard" class="page page-game col-xs-12 col-sm-8 col-md-6">	
-			<!-- <div class="cell col-xs-4" id="{{cell.id}}">
-		      <div class="cell-inner">
-		        <i class="sign cross fa fa-times" ng-show="cell.sign === 'cross'"></i>
-		        <i class="sign circle fa fa-circle-o" ng-show="cell.sign === 'circle'"></i>
-		      </div>
-		    </div> -->
+	  	<div class="page page-game col-xs-12 col-sm-8 col-md-6">
+	  		<div id="gameDetails">
+	  			<div class="col-xs-12 col-sm-6 playerInfoCOntainer">
+	  				<i class="fa fa-check turn-indicator"></i>
+	  				<label class="col-xs-6">Player 1: </label>
+	  				<label class="col-xs-6 player player1"></label>
+	  			</div>
+	  			<div class="col-xs-12 col-sm-6 playerInfoCOntainer">
+	  				<i class="fa fa-check turn-indicator"></i>
+	  				<label class="col-xs-6">Player 2: </label>
+	  				<label class="col-xs-6 player player2"></label>
+	  			</div>
+	  		</div>
+			<div id="gameBoard"></div>
 		</div>
 	  <!-- ****************** GAME PAGE ENDS ********************* -->
 

@@ -3,8 +3,15 @@
 	/************ The Variables ************************/
 	var global = {};
 	global.username = undefined;
+	global.coPlayerName = undefined;
 	global.socket = io.connect();
 	global.gameID = undefined;
+	global.whoseTurn = undefined;
+	global.last_recieved_game_msg = undefined;
+	global.last_sent_game_msg = undefined;
+	global.awaiting_server_response = true;
+	global.playerSign = undefined;
+	global.coPlayerSign = undefined;
 	////////////////////////////////////////////////////
 
 
@@ -19,6 +26,10 @@
 	$('#btn_StartNewGame').on('click', startNewGame);
 
 	$('#btn_JoinGame').on('click', joinGame);
+
+	$('#modal .msgContainer .closeIcon').on('click', hideMessage);
+
+	$('#gameBoard').on('click', '.cell-inner', handleCellClick);
 	/************************************************************/
 
 
@@ -105,6 +116,71 @@
 	///////////////////////////////////////////////////////////////
 
 
+	/**************************************************************
+	* This function will be called when user clicks on a game cell 
+	* if we are waiting for server response (e.g user has just played)
+	* Or, it is not his turn to play, just get him out of here.....
+	**************************************************************/
+	function handleCellClick (ev) {
+		if (global.awaiting_server_response || global.whoseTurn !== global.username) {
+			return;
+		}
+
+		//Now that we know user is playing his turn
+		//get the cell id where he clicked
+		var cellID = $(ev.target).closest('.cell').attr('id');
+
+		var success = false;
+
+		//check if that cell is blank
+		var cells = global.last_recieved_game_msg.cells;
+		for(var i in cells) {
+			if (cells[i].id === cellID) {
+				
+				//check if clicked cell is blank
+				if (cells[i].sign === "blank") {
+					cells[i].sign = global.playerSign;
+					global.whoseTurn = "Not Mine...";
+					putSignInCell(cellID, global.playerSign);
+					//showWait();
+					showTokenMsg("Wait...");
+					success = true;
+				}
+				
+				break;
+			} 
+		}
+
+		//if cell click was successful, send the new cell list to server
+		if(success) {
+			global.last_sent_game_msg = global.last_recieved_game_msg;
+			//This step might be unneccessary as arrays are passed by ref
+			global.last_sent_game_msg.cells = cells;
+
+			sendToServer("GAME_MSG", global.last_sent_game_msg);
+			global.awaiting_server_response = true;
+		}		
+	}
+
+
+
+	function putSignInCell (cellID, sign) {
+		htm = (sign === 'cross') ? '<i class="sign cross fa fa-times"/></i>' : '<i class="sign circle fa fa-circle-o"></i>';
+
+		$('#'+cellID +' .cell-inner').html(htm);
+	}
+
+
+
+	function showTokenMsg (msg) {
+		$('#tokenMsg .msg').text(msg);
+		$('#tokenMsg').show();
+	}
+
+	function hideTokenMsg () {
+		$('#tokenMsg').hide();
+	}
+
 
 	/**************************************************************
 	* This function will be called when server has created a 
@@ -114,15 +190,26 @@
 	function serverCreatedNewGameID (gameID) {
 		global.gameID = gameID;
 		showMessage("Ask your partner to join game using <b>GAME ID = " + gameID
-			+ "</b><br/>Once he joins, your game will start automatically...");
+			+ "</b><br/>Once he joins, your game will start automatically...", true);
 	}
 	///////////////////////////////////////////////////////////////
 
 
 	/**************************************************************
 	* This function will show the msg in the modal
+	* By default close icon will be shown
+	* But if user needs to be stopped on that screen for waiting
+	* pass true as 2nd parameter, so that user will not be able to 
+	* close the modal
 	**************************************************************/
-	function showMessage (msgHTML) {
+	function showMessage (msgHTML, hideCloseIcon) {
+		var hideCloseIcon = hideCloseIcon || false;
+		if (hideCloseIcon) {
+			$('#modal .msgContainer .closeIcon').hide();
+		} 
+		else {
+			$('#modal .msgContainer .closeIcon').show();
+		}
 		$('#modal .msg').html(msgHTML);
 		$('#modal').show();
 	}
@@ -139,27 +226,91 @@
 	//////////////////////////////////////////////////////////////
 
 
+	function showWait () {
+		$('#modal').addClass('justWait').show();
+	}
+
+	function hideWait () {
+		$('#modal').removeClass('justWait').hide();
+	}
+
 	/**************************************************************
 	* This function handles Game specific messages from server
 	**************************************************************/
 	function gameMsgHandler (gameMsg) {
 		console.log('gameMsg'); console.log(gameMsg);
 
+		global.whoseTurn = gameMsg.whoseTurn.username;
+		global.awaiting_server_response = false;
+		global.last_recieved_game_msg = gameMsg;
+
+		//1st time comes Init
 		if (gameMsg.type === 'Init') {
 			//That means 2nd player has just joined
 			//Show the GAME-PAGE for 1st time
 			hideMessage();
+			
+			$('#gameDetails .player1').text("(" + gameMsg.players[0].sign + ") " + gameMsg.players[0].username);
+			$('#gameDetails .player2').text("(" + gameMsg.players[1].sign + ") " + gameMsg.players[1].username);
+
 			createGameBoard(gameMsg.cells);
+
 			showPage("page-game");
 
+			getUserSign(gameMsg.players);
+
 			//if it is not my turn, tell me
-			if (gameMsg.whoseTurn.username !== global.username) {
-				showMessage(gameMsg.whoseTurn.username + " has got the 1st chance to play. Wait for him to play...");
+			if (global.whoseTurn !== global.username) {
+				global.coPlayerName = global.whoseTurn;
+				showTokenMsg("Wait!!! " + global.whoseTurn + "'s turn...");
 			} else {
-				showMessage('Your turn 1st... <br/><br/>Click on any empty cell to play...<br/><br/><b>This message will automatically dissappear in 5 seconds</b>');
-				setTimeout(function() {
-					hideMessage();
-				}, 5000);
+				showTokenMsg('Your turn... Click a cell');				
+			}
+		}
+		else if (gameMsg.type === 'Running') {
+			updateCellSigns (gameMsg.cells);
+			hideWait();
+			if (global.whoseTurn === global.username) {
+				showTokenMsg("Hi " + global.username + ", Your Turn...");
+			} 
+			else {
+				showTokenMsg("Wait!!! " + global.whoseTurn + "'s turn...");
+			}			
+		}
+
+		adjustTurnIndicator();
+	}
+
+
+
+
+
+
+	function updateCellSigns (cells) {
+		for(var i in cells) {
+			if(cells[i].sign !== "blank") {
+				putSignInCell(cells[i].id, cells[i].sign);
+			}
+		}
+		adjustSizes();
+	}
+
+
+
+	function getUserSign (players) {
+		if (players[0].username === global.username) {
+			global.playerSign = players[0].sign;
+			global.coPlayerSign = players[1].sign;
+		} 
+		else {
+			global.playerSign = players[1].sign;
+			global.coPlayerSign = players[0].sign;
+		} 
+
+		for (var i in players) {
+			if(players[i].username === global.username) {
+				global.playerSign = players[i].sign;
+				break;
 			}
 		}
 	}
@@ -171,6 +322,19 @@
 
 		//show this particular page only
 		$('.' + pageClass).show();
+	}
+
+
+	function adjustTurnIndicator () {
+		$('#gameDetails .playerInfoCOntainer').each(function(){
+			var playerName = $(this).find('.player').text().trim();
+			if (playerName === global.whoseTurn) {
+				$(this).addClass('hisTurn');
+			} 
+			else {
+				$(this).removeClass('hisTurn');
+			}
+		})
 	}
 
 	/*
@@ -196,8 +360,9 @@
 	init();
 
 	function init () {
-		adjustSizes();
+		showPage('page-home');
 	}
+
 
 	function adjustSizes () {
 		$('.cell').height($('.cell').width());
@@ -218,7 +383,7 @@
 
 		$('#gameBoard').html(htm);
 
-		adjustSizes();
+		setTimeout(adjustSizes, 100);
 	}
 
 

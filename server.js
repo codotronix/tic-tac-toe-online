@@ -32,11 +32,20 @@ io.on('connection', function (socket) {
     //When a new socket connects
     socketManager.addSocket(socket);
 
+
+
+
+
+
     //When this socket connection disconnects
     socket.on('disconnect', function () {
     	console.log('Server: disconnected');
     	socketManager.deleteSocket(socket.id);
     });
+
+
+
+
 
     socket.on("NEW_GAME", function (username) {
         console.log("new-game-request received from " + username);
@@ -47,6 +56,10 @@ io.on('connection', function (socket) {
         //Send this newly created gameID back to client
         socketManager.send(socket.id, "GAME_CREATED", gameID);
     });
+
+
+
+
 
 
     socket.on("JOIN_GAME", function (userInfo) {
@@ -60,6 +73,7 @@ io.on('connection', function (socket) {
             //Choose between 0 or 1, who will play 1st
             var rand = Math.floor(Math.random() * 2);
             var gameMsg = {};
+            gameMsg.gameID = userInfo.gameID;
             gameMsg.type = 'Init';
             gameMsg.players = socketManager.getPlayers(userInfo.gameID);
             gameMsg.whoseTurn = gameMsg.players[rand];
@@ -77,29 +91,103 @@ io.on('connection', function (socket) {
         
     });
 
+
+
+    socket.on("GAME_MSG", function (gameMsg) {
+        console.log("received gameMsg..."); console.log(gameMsg);
+        //check if anyone has won
+        //if(hasAnyoneWon) {}
+        //else {...}
+
+        //Change the turn 
+        if(gameMsg.whoseTurn.username === gameMsg.players[0].username) {
+            gameMsg.whoseTurn = gameMsg.players[1];
+        } else {
+            gameMsg.whoseTurn = gameMsg.players[0];
+        }
+
+        gameMsg.type = "Running";
+
+        socketManager.sendTo_Players_of_GameID(gameMsg.gameID, "GAME_MSG", gameMsg);
+    });
+
+//Sample gameMsg JSON structure
+    //    {
+    //     "gameID": "123456",
+    //     "type": "Init",
+    //     "players": [
+    //         {
+    //             "socketID": "WCvaQghnIJmIU9UBAAAP",
+    //             "username": "Suman Barick",
+    //             "sign": "cross"
+    //         }, {
+    //             "username": "Pritam Das",
+    //             "socketID": "KX-BSWY3W1aDS9AyAAAQ",
+    //             "sign": "circle"
+    //         }
+    //     ],
+    //     "whoseTurn": {
+    //         "socketID": "WCvaQghnIJmIU9UBAAAP",
+    //         "username": "Suman Barick",
+    //         "sign": "cross"
+    //     },
+    //     "cells": [
+    //         {
+    //             "id": "cell-1",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-2",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-3",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-4",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-5",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-6",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-7",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-8",
+    //             "sign": "blank"
+    //         }, {
+    //             "id": "cell-9",
+    //             "sign": "blank"
+    //         }
+    //     ]
+    // }
+
+
+
     /*
     * When user is ready to play,
     * Check if both the players are ready
     * If both are ready start the game
     */
-    socket.on("ready", function (gameID) {
-        socketManager.markPlayerAsReady(gameID, socket.id);
+    // socket.on("ready", function (gameID) {
+    //     socketManager.markPlayerAsReady(gameID, socket.id);
 
-        console.log("ready received... from socket id="+socket.id);
+    //     console.log("ready received... from socket id="+socket.id);
         
-        var players = socketManager.getPlayers(gameID);
+    //     var players = socketManager.getPlayers(gameID);
 
-        console.log("players=");
-        console.log(players);
+    //     console.log("players=");
+    //     console.log(players);
 
-        if(players[0]["ready"] && players[1]["ready"]) {
-            startGame(gameID, players);
-        } else {
-            console.log('All player are not ready');
-            console.log(socketManager.getPlayers(gameID));
-        }
+    //     if(players[0]["ready"] && players[1]["ready"]) {
+    //         startGame(gameID, players);
+    //     } else {
+    //         console.log('All player are not ready');
+    //         console.log(socketManager.getPlayers(gameID));
+    //     }
 
-    })
+    // })
 
 
 
